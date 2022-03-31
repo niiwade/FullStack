@@ -15,16 +15,79 @@ let posts = [
 
 
 const listPosts = (req, res) => {
+    res.setHeader("Total", posts.length)
     res.json(posts);
 }
 
 
+
+const getPosts = (req, res) => {
+    // const postId = req.params.id;
+    // const post = posts.find(p => p._id === postId);
+    // !post === null ? res.json(post) : res.status(404).json({ message: "Post not found" });
+    // // if (!post) {
+    // //     res.status(404).json({ message: "Post not found" });
+    // // } else {
+    // //     res.json(post);
+    // // }
+
+    const { id } = req.params.id;
+
+    const post = posts.find((post) => post._id === id);
+
+    !post === null ? res.json(post) : res.status(404).json({ message: "Post not found" });
+
+    res.json()
+}
+
 const savePosts = (req, res) => {
-    res.json({ title: "new post" })
+    const post = req.body;
+
+    // const title = post.title?.trim?.() ?? "";
+
+    // title === "" ? res.status(400).json({ message: "Title is required" }) : null;
+
+    post._id = `${posts.length + 1}`;
+    posts.push(post);
+
+
+    res.status(201).json(post)
+
+
+
 }
 
 
+const updatePost = (req, res) => {
+    const { id } = req.params.id;
+    const newpost = req.body;
+
+    const postIndex = posts.findIndex((newpost) => newpost._id === id);
+    postIndex === -1 ? res.status(404).json({ message: "Post not found" }) : null;
+    posts[postIndex] = newpost;
+    res.status(200).json(newpost);
+}
+
+
+const deletePost = (req, res) => {
+
+    const { id } = req.params.id;
+
+    const postIndex = posts.findIndex((post) => post._id === id);
+
+
+    postIndex === -1 ? res.status(404).json({ message: "Post not found" }) : null;
+
+
+    posts.splice(postIndex, 1)
+
+    res.status(200).json({ message: "Post deleted" })
+}
+
 module.exports = {
     listPosts,
-    savePosts
+    savePosts,
+    getPosts,
+    deletePost,
+    updatePost
 }
