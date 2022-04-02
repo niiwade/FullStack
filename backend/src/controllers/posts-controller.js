@@ -1,22 +1,30 @@
-let posts = [
-    {
-        _id: "1",
-        title: "Neyram the Great",
-        body: " Test body",
-        ImageUrl: "https://phantom-marca.unidadeditorial.es/4ecd5daf3a8f616db38532ef9a029dfa/resize/1320/f/jpg/assets/multimedia/imagenes/2021/05/20/16215292491991.jpg",
-        author: "wade",
-        comments: [],
-        createdAt: new Date(),
-        updatedAt: new Date(),
+// let posts = [
+//     {
+//         _id: "1",
+//         title: "Neyram the Great",
+//         body: " Test body",
+//         ImageUrl: "https://phantom-marca.unidadeditorial.es/4ecd5daf3a8f616db38532ef9a029dfa/resize/1320/f/jpg/assets/multimedia/imagenes/2021/05/20/16215292491991.jpg",
+//         author: "wade",
+//         comments: [],
+//         createdAt: new Date(),
+//         updatedAt: new Date(),
+//     }
+// ];
+
+
+const postService = require("../services/posts-service");
+
+
+const listPosts = async (req, res) => {
+    try {
+        const posts = await postService.listPosts()
+        res.setHeader("Total", posts.length)
+        res.json(posts);
+
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({ message: "Internal Error" })
     }
-];
-
-
-
-
-const listPosts = (req, res) => {
-    res.setHeader("Total", posts.length)
-    res.json(posts);
 }
 
 
