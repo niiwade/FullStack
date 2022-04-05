@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 require("dotenv").config();
 
 const postRouter = require('./routes/posts');
+const commentRouter = require('./routes/comments');
 
 const app = express();
 const PORT = 4000;
@@ -12,6 +13,12 @@ const PORT = 4000;
 app.use(express.json()); /// transform incoming request data to json format
 
 app.use("/posts", postRouter);
+app.use("/comments", commentRouter);
+
+app.use((error, req, res, next) => {
+    console.error(error.stack)
+    res.status(500).json({ message: error.message })
+})
 
 
 const connectDb = () => {

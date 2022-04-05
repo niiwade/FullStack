@@ -1,19 +1,19 @@
 const mongoose = require("mongoose")
 
 
-const CommentSchema = new mongoose.Schema(
-    {
-        author: {
-            type: String,
-            required: true
-        },
-        comment: {
-            type: String,
-            required: true
-        }
+// const CommentSchema = new mongoose.Schema(
+//     {
+//         author: {
+//             type: String,
+//             required: true
+//         },
+//         comment: {
+//             type: String,
+//             required: true
+//         }
 
-    },
-)
+//     },
+// )
 
 const PostSchema = new mongoose.Schema(
     {
@@ -32,7 +32,7 @@ const PostSchema = new mongoose.Schema(
             type: String,
             required: true
         },
-        comments: [CommentSchema],
+        // comments: [CommentSchema],
 
     },
     { timestamp: true }
@@ -40,5 +40,6 @@ const PostSchema = new mongoose.Schema(
 
 
 const PostModel = mongoose.model("Post", PostSchema)
+
 
 module.exports = PostModel

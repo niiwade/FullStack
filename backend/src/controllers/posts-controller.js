@@ -21,81 +21,81 @@ const listPosts = async (req, res) => {
         res.setHeader("Total", posts.length)
         res.json(posts);
 
-    } catch (err) {
-        console.log(err)
+    } catch (error) {
+        console.log(error)
         res.status(500).json({ message: "Internal Error" })
     }
 }
 
 
-
-const getPosts = (req, res) => {
-    // const postId = req.params.id;
-    // const post = posts.find(p => p._id === postId);
-    // !post === null ? res.json(post) : res.status(404).json({ message: "Post not found" });
-    // // if (!post) {
-    // //     res.status(404).json({ message: "Post not found" });
-    // // } else {
-    // //     res.json(post);
-    // // }
-
-    const { id } = req.params.id;
-
-    const post = posts.find((post) => post._id === id);
-
-    !post === null ? res.json(post) : res.status(404).json({ message: "Post not found" });
-
-    res.json()
-}
-
-const savePosts = (req, res) => {
+const savePosts = async (req, res, next) => {
     const post = req.body;
 
-    // const title = post.title?.trim?.() ?? "";
+    try {
+        const savedPost = await postService.savePost(post)
+        res.status(201).json(savedPost)
+    } catch (error) {
+        next(error)
+    }
+}
 
-    // title === "" ? res.status(400).json({ message: "Title is required" }) : null;
 
-    post._id = `${posts.length + 1}`;
-    posts.push(post);
+const getPosts = async (req, res, next) => {
+
+    const { id } = req.params.id;
+
+    try {
+        const post = await postService.getPosts(id)
+
+        !post === null ? res.json(post) : res.status(404).send()
+
+    } catch (error) {
+        next(error);
+    }
+}
 
 
-    res.status(201).json(post)
+
+
+const updatePost = async (req, res, next) => {
+    const { id } = req.params;
+    const newpostinfo = req.body;
+
+    try {
+        const updatedPost = await postService.updatePosts(id, newpostinfo)
+
+        !updatedPost ? res.status(404).json({ message: "Post not found" }) : null;
+        res.json(updatedPost)
+
+    }
+
+    catch (error) {
+        next(error)
+    }
 
 
 
 }
 
 
-const updatePost = (req, res) => {
-    const { id } = req.params.id;
-    const newpost = req.body;
-
-    const postIndex = posts.findIndex((newpost) => newpost._id === id);
-    postIndex === -1 ? res.status(404).json({ message: "Post not found" }) : null;
-    posts[postIndex] = newpost;
-    res.status(200).json(newpost);
-}
-
-
-const deletePost = (req, res) => {
+const deletePost = async (req, res, next) => {
 
     const { id } = req.params.id;
 
-    const postIndex = posts.findIndex((post) => post._id === id);
+    try {
+        await postService.deletePost(id)
+        res.status(204).json({ message: "Post deleted" })
+    } catch (error) {
+        next(error)
+    }
 
-
-    postIndex === -1 ? res.status(404).json({ message: "Post not found" }) : null;
-
-
-    posts.splice(postIndex, 1)
-
-    res.status(200).json({ message: "Post deleted" })
+    // postIndex === -1 ? res.status(404).json({ message: "Post not found" }) : null;
 }
 
 module.exports = {
     listPosts,
     savePosts,
     getPosts,
-    deletePost,
-    updatePost
+    updatePost,
+    deletePost
 }
